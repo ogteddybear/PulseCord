@@ -12,9 +12,12 @@ RUN apt-get update \
 WORKDIR /app
 
 COPY package.json package-lock.json ./
-RUN npm install --no-audit --no-fund
+RUN npm install --include=dev --no-audit --no-fund
 
-COPY . .
+# Copy source after npm install so the stale repository lockfile cannot
+# overwrite the reconciled lockfile in the build image.
+COPY tsconfig.json ./
+COPY src/ ./src/
 RUN npm run build && npm prune --omit=dev
 
 ENV NODE_ENV=production
