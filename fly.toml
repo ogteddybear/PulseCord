@@ -1,27 +1,18 @@
-# fly.toml app configuration file generated for pulsecord on 2026-11-23T14:23:16Z
-#
-# See https://docs.fly.io/reference/configuration for information about how to use this file.
-#
-
-app = 'pulsecord'
-primary_region = 'syd'
+# PulseCord only opens outbound Discord Gateway connections.
+# No inbound HTTP service is needed; Fly must not health-check a web port.
+app = "pulsecord"
+primary_region = "syd"
 
 [build]
-  dockerfile = 'Dockerfile'
+  dockerfile = "Dockerfile"
 
 [processes]
-  app = 'npm start'
-
-[http_service]
-  internal_port = 8080
-  force_https = true
-  auto_stop_machines = 'stop'
-  auto_start_machines = true
-  min_machines_running = 0
-  processes = ['app']
+  app = "npm start"
 
 [[vm]]
-  memory = '256mb'
-  cpu_kind = 'shared'
+  memory = "256mb"
+  cpu_kind = "shared"
   cpus = 1
-  processes = ['app']
+  processes = ["app"]
+
+# Keep the app process group at one machine: fly scale count app=1
